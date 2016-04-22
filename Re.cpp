@@ -40,3 +40,40 @@ public:
         return false;
     }
 };
+思路2.动态规划法
+class Solution {
+public:
+bool match(char* str, char* pattern)
+{
+bool dp[100][100];
+int n=strlen(str)+1,m=strlen(pattern)+1;
+dp[0][0]=true;
+int i,j;
+for(i=1;i<n;++i)
+dp[i][0]=false; /模式串用0个字符和字符串匹配全为 假/
+for(j=1;j<m;++j)
+{
+if(pattern[j-1]=='')
+dp[0][j]=dp[0][j-2];
+else
+dp[0][j]=false;
+}/字符串用0个字符和模式串匹配,把取0字符为真,否则为假/
+for(i=1;i<n;++i)
+for(j=1;j<m;++j)
+{
+if(str[i-1]==pattern[j-1]||pattern[j-1]=='.')
+dp[i][j]=dp[i-1][j-1];
+else if(pattern[j-1]=='')
+{
+if(pattern[j-2]==str[i-1]||pattern[j-2]=='.')
+dp[i][j]=dp[i][j-2]/模式少用和前面一个字符能和i匹配那么，加上这俩个字符也和i匹配，说明取了0个字符/
+||dp[i-1][j];/ 如果模式j能和i左边的数匹配那么 把取1个字符,就能和i匹配,因为号左边的数等于str i的位置/
+else/ 模式左边的数不等于str i的字符,那么必须取0个字符之后能和i匹配才可以*/
+dp[i][j]=dp[i][j-2];
+}
+else
+dp[i][j]=false;
+}
+return dp[n-1][m-1];
+}
+};
